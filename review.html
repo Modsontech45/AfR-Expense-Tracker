@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Transaction</title>
+    <link rel="stylesheet" href="review.css">
+    <script>
+       const scriptURL =
+       "https://script.google.com/macros/s/AKfycbwtmIL5uCniKN21rASaMC4zPDyZDpGADST2F3YaGy71Auo-xlhzt5pRjLX8qaGTVDQ9FA/exec"; // Replace with your script URL
+        function showSpinner() {
+        const spinner = document.getElementById("spinner");
+    spinner.style.display = "flex"; // Show the spinner
+}
+
+function hideSpinner() {
+    const spinner = document.getElementById("spinner");
+    spinner.style.display = "none"; // Hide the spinner
+}
+        // Function to get transaction data by transactionId
+        function getTransaction() {
+            showSpinner();
+            const urlParams = new URLSearchParams(window.location.search);
+            const transactionId = urlParams.get('transactionId');
+            const token = urlParams.get('token');
+
+            if (!transactionId || !token) {
+                alert("Missing transaction ID or token.");
+                return;
+            }
+
+            fetch(`${scriptURL}?action=getTransaction&transactionId=${transactionId}&token=${token}`, {
+                method: "GET"
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    console.log()
+                    displayTransaction(data.transaction);
+                 hideSpinner();
+                } else {
+                    document.getElementById("demo").innerText = data.message;
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        // Function to display transaction data
+        function displayTransaction(transaction) {
+            document.getElementById('date').innerText = transaction[0];
+            document.getElementById('transactionId').innerText = transaction[1];
+            document.getElementById('name').innerText = transaction[2];
+            document.getElementById('description').innerText = transaction[3];
+            document.getElementById('type').innerText = transaction[4];
+            document.getElementById('field').innerText = transaction[5];
+            document.getElementById('amount').innerText = transaction[6];
+            document.getElementById('notes').innerText = transaction[7];
+        }
+
+        // Function to mark transaction as reviewed
+        function markAsReviewed() {
+            showSpinner();
+            const urlParams = new URLSearchParams(window.location.search);
+            const transactionId = urlParams.get('transactionId');
+            const token = urlParams.get('token');
+
+            fetch(scriptURL, {
+                method: "POST",
+                body: JSON.stringify({
+                    action: "reviewTransaction",
+                    transactionId,
+                    token
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') { 
+                    document.getElementById("demo").innerText  = "Transaction marked as reviewed!";
+                 
+                } else {
+                    document.getElementById("demo").innerText = data.message;
+                    
+                }
+                hideSpinner() ;
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        // Call the function to get transaction data on page load
+        window.onload = getTransaction;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Review Transaction</h1>
+        <div id="spinner" style="display: none;">
+            <div class="loader"></div>
+        </div>
+    <div>
+        <p id="demo"></p>
+        <p><strong>Date:</strong> <span id="date"></span></p>
+        <p><strong>Transaction ID:</strong> <span id="transactionId"></span></p>
+        <p><strong>Name:</strong> <span id="name"></span></p>
+        <p><strong>Description:</strong> <span id="description"></span></p>
+        <p><strong>Type:</strong> <span id="type"></span></p>
+        <p><strong>Field:</strong> <span id="field"></span></p>
+        <p><strong>Amount:</strong> <span id="amount"></span> <b>XOF</b> </p>
+        <p><strong>Notes:</strong> <span id="notes"></span></p>
+    </div>
+    <button onclick="markAsReviewed()">Mark as Reviewed</button>
+
+    </div>
+    <footer>
+        <p style="color: rgb(80, 79, 76);">&copy; AfR 2025</p>
+    </footer>
+</body>
+</html>
