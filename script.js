@@ -1,5 +1,5 @@
 const scriptURL =
-  "https://script.google.com/macros/s/AKfycbzIJ96mlNSECL_cPLa3MFwr-g0wsKl9QmKhgaSCGlja9Zk4VFfFiAUMFmnV9ULlwcTI3Q/exec";
+  "https://script.google.com/macros/s/AKfycbxCF32mIKYBF1M8HI47ULIZXuZR9e2OhHeAhk86vph0L1YcNh0JI8ouZW26yDpsDRx9MQ/exec";
 
 function showSpinner() {
   const spinner = document.getElementById("spinner");
